@@ -1,0 +1,15 @@
+# Local database / compliance logs (CRITICAL)
+audit_log.csv
+
+# Python runtime artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local environments & IDE configs
+.venv/
+venv/
+.env
+.vscode/
+.idea/
