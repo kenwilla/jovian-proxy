@@ -1,0 +1,2 @@
+{"timestamp_utc": "2026-10-10T00:32:46.205966+00:00", "attribution": {"user_id": "dev_offshore_992", "department": "Contract_Vendor_Squad"}, "security_event": {"token_placeholder": "USER_TOKEN_CREDIT_CARD_1", "detected_entity_type": "CREDIT_CARD", "action_taken": "ANONYMIZED_AND_VAULTED"}}
+{"timestamp_utc": "2026-10-10T00:32:46.206539+00:00", "attribution": {"user_id": "dev_offshore_992", "department": "Contract_Vendor_Squad"}, "security_event": {"token_placeholder": "USER_TOKEN_EMAIL_2", "detected_entity_type": "EMAIL", "action_taken": "ANONYMIZED_AND_VAULTED"}}

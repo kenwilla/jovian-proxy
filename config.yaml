@@ -1,0 +1,11 @@
+# ========================================================
+# Secure AI Governance Gateway Configuration Profiles
+# ========================================================
+
+gateway:
+  # Time-to-Live (TTL) in seconds before tokens self-destruct from RAM
+  token_ttl_seconds: 600
+
+logging:
+  # The output file path for enterprise JSON Lines logging
+  log_file_path: "audit_log.jsonl"

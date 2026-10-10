@@ -1,15 +1,18 @@
 from core import engine
 
-# Simulate a contractor on the offshore development squad trying to leak credentials
-mock_prompt = "Pasting the production password file for dev-lead@offshore-vendor.com right now."
-print("🚀 Simulating active context-aware text flow...")
+print("🚀 Executing deep structural JSON security scan...")
 
-# Execute the pipeline with explicit attribution strings passed directly
-safe_prompt = engine.clean_outbound_prompt(
-    text=mock_prompt,
-    user_id="emp_contractor_402",
-    department="Offshore_Engineering_Group"
+# Simulate an offshore developer pushing a prompt with nested PII violations
+engine.clean_outbound_prompt(
+    text="URGENT: Run test compile for john.doe@offshore-vendor.com using Visa card 4111-2222-3333-4444.",
+    user_id="dev_offshore_992",
+    department="Contract_Vendor_Squad"
 )
 
-print("\n✨ Clean text engineered successfully.")
-print("📊 Inspecting audit_log.csv for contextual records...")
+print("✨ Security logs engineered.")
+print("📊 Opening audit_log.jsonl payload map...\n")
+
+# Read the newly created JSON lines file locally to verify structure
+with open("audit_log.jsonl", "r") as log_file:
+    for line in log_file:
+        print(line.strip())

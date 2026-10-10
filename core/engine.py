@@ -1,14 +1,13 @@
 import time
 from typing import List, Dict
 from detectors.base import BaseDetector
-from core.logger import CSVComplianceLogger
+from core.logger import JSONComplianceLogger
 
 class GovernanceEngine:
     def __init__(self, detectors: List[BaseDetector], ttl_seconds: int = 600):
         self.detectors = detectors
-        self.logger = CSVComplianceLogger()
+        self.logger = JSONComplianceLogger()
         self.ttl_seconds = ttl_seconds
-        # Structure: {token_placeholder: {"value": real_value, "expires_at": timestamp}}
         self.vault: Dict[str, Dict] = {}
 
     def _evict_expired_tokens(self):
