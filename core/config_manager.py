@@ -57,5 +57,13 @@ class GatewayConfigManager:
     @property
     def infrastructure_enabled(self) -> bool:
         return self.settings.get("detectors", {}).get("infrastructure_scanner_enabled", True)
+        
+    @property
+    def whitelist_enabled(self) -> bool:
+        return self.settings.get("network", {}).get("ip_whitelist_enabled", False)
+
+    @property
+    def allowed_networks(self) -> list:
+        return self.settings.get("network", {}).get("allowed_ip_networks", [])
 
 config_manager = GatewayConfigManager()

@@ -1,14 +1,10 @@
-# ========================================================
-# Jovian Proxy Configuration Profiles
-# ========================================================
-
 gateway:
   token_ttl_seconds: 600
 
 logging:
-  log_directory: "logs" 
-  log_filename_pattern: "jovian-shield-{date}-{name}.jsonl"
-  log_base_name: "prod"
+  log_directory: "logs"
+  log_filename_pattern: "{name}_{date}.jsonl"
+  log_base_name: "audit_log"
 
 security:
   master_api_key: "sec_gateway_secret_abc123"
@@ -17,3 +13,8 @@ detectors:
   email_scanner_enabled: true
   credit_card_scanner_enabled: true
   infrastructure_scanner_enabled: true
+
+network:
+  ip_whitelist_enabled: true
+  allowed_ip_networks:
+    - "127.0.0.1/32"

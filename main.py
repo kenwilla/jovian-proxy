@@ -1,7 +1,7 @@
 import json
 import os
 from typing import Optional
-from fastapi import FastAPI, Header, Depends
+from fastapi import FastAPI, Header, Depends, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -17,6 +17,7 @@ class ChatPayload(BaseModel):
 @app.post("/v1/proxy/chat")
 async def proxy_chat_endpoint(
     payload: ChatPayload,
+    request: Request,
     x_user_id: Optional[str] = Header(default="UNKNOWN"),
     x_department: Optional[str] = Header(default="UNKNOWN"),
     _: bool = Depends(verify_gateway_authentication)
