@@ -35,5 +35,17 @@ class GatewayConfigManager:
     @property
     def master_key(self) -> str:
         return self.settings.get("security", {}).get("master_api_key", "")
+        
+    @property
+    def email_enabled(self) -> bool:
+        return self.settings.get("detectors", {}).get("email_scanner_enabled", True)
+
+    @property
+    def credit_card_enabled(self) -> bool:
+        return self.settings.get("detectors", {}).get("credit_card_scanner_enabled", True)
+
+    @property
+    def infrastructure_enabled(self) -> bool:
+        return self.settings.get("detectors", {}).get("infrastructure_scanner_enabled", True)
 
 config_manager = GatewayConfigManager()

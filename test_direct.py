@@ -1,17 +1,24 @@
 from core import engine
 
-print("🚀 Testing Jovian Proxy Cloud Infrastructure Leak Shield...")
+print("🛡️  Jovian Proxy Full-Spectrum Feature Flag Validation Test...")
 
-# Simulate an offshore engineer pasting an error log containing an AWS key
-mock_prompt = "Error: Connection failed for AWS key AKIAIOSFODNN7EXAMPLE using Bearer secret-token-12345."
-
-safe_prompt = engine.clean_outbound_prompt(
-    text=mock_prompt,
-    user_id="dev_offshore_302",
-    department="Cloud_Infrastructure_Group"
+# 🌟 A composite prompt containing ALL THREE leak types (Email, CC, AWS)
+multi_leak_prompt = (
+    "URGENT: Developer admin@jovianhq.com is debugging a deployment block. "
+    "Check connection config using Visa card 4111-2222-3333-4444 "
+    "and AWS Access Key ID AKIAIOSFODNN7EXAMPLE right away."
 )
 
-print("\n☁️ [WHAT THE CLOUD AI SEES]:")
-print(safe_prompt)
+print("\n1. 🧑‍💻 [ORIGINAL PROMPT]:")
+print(multi_leak_prompt)
 
-print("\n📊 Check your open web browser at http://127.0.0 to see it live!")
+# Execute the pipeline with explicit attribution strings
+safe_prompt = engine.clean_outbound_prompt(
+    text=multi_leak_prompt,
+    user_id="dev_auditor_01",
+    department="Security_Validation_Squad"
+)
+
+print("\n2. ☁️  [WHAT THE CLOUD AI SEES]:")
+print(safe_prompt)
+print("\n📊 Check your open web browser at http://127.0.0 to see the results render live!")

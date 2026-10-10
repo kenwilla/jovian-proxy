@@ -1,5 +1,5 @@
 # ========================================================
-# Secure AI Governance Gateway Configuration Profiles
+# Jovian Proxy Configuration Profiles
 # ========================================================
 
 gateway:
@@ -10,3 +10,9 @@ logging:
 
 security:
   master_api_key: "sec_gateway_secret_abc123"
+
+# 🌟 ADDED: Modular Feature Flags to toggle scanning profiles
+detectors:
+  email_scanner_enabled: true
+  credit_card_scanner_enabled: true
+  infrastructure_scanner_enabled: true
