@@ -1,16 +1,17 @@
 from core import engine
 
-print("🚀 Executing deep structural JSON security scan...")
+print("🚀 Testing Jovian Proxy Cloud Infrastructure Leak Shield...")
 
-engine.clean_outbound_prompt(
-    text="URGENT: Run test compile for john.doe@offshore-vendor.com using Visa card 4111-2222-3333-4444.",
-    user_id="dev_offshore_992",
-    department="Contract_Vendor_Squad"
+# Simulate an offshore engineer pasting an error log containing an AWS key
+mock_prompt = "Error: Connection failed for AWS key AKIAIOSFODNN7EXAMPLE using Bearer secret-token-12345."
+
+safe_prompt = engine.clean_outbound_prompt(
+    text=mock_prompt,
+    user_id="dev_offshore_302",
+    department="Cloud_Infrastructure_Group"
 )
 
-print("✨ Security logs engineered.")
-print("📊 Opening audit_log.jsonl payload map...\n")
+print("\n☁️ [WHAT THE CLOUD AI SEES]:")
+print(safe_prompt)
 
-with open("audit_log.jsonl", "r") as log_file:
-    for line in log_file:
-        print(line.strip())
+print("\n📊 Check your open web browser at http://127.0.0 to see it live!")
