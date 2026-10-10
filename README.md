@@ -1,32 +1,52 @@
-# Secure AI Governance Gateway Proxy 🛡️
+# Jovian Proxy 🛡️
 
-An open-core, ultra-low latency data anonymization and stateful tokenization gateway engine designed for modern enterprises. Protects proprietary data pipelines from leaking into public cloud AI endpoints (OpenAI, Anthropic, Claude) before data ever leaves your corporate perimeter.
+An open-core, ultra-low latency data anonymization and stateful tokenization gateway shield designed for modern enterprise ecosystems. Jovian Proxy sits as a perimeter defense layer, absorbing high-risk PII strings, financial records, and infrastructure credential leaks before your data ever exits the corporate perimeter to public cloud AI endpoints.
 
-## Core Pillars
-- **Zero-Trust Tokenization Layer:** Intercepts outgoing chat prompts or file streams, parses data structure, and masks high-risk PII strings using modular scanners.
-- **Stateful Inbound Reversal Vault:** Registers data tokens to local system memory, enabling the engine to map context seamlessly back to your internal developers while exposing 0% raw text to cloud logs.
-- **Automated Memory Expiry Execution (TTL Cache):** Tokens actively self-destruct from volatile server RAM after 10 minutes to guarantee complete privacy compliance.
-- **Zero Log Leakage Audit Trail:** Automatically writes structured event logs to a local CSV file tracking security incidents with millisecond precision without storing any underlying raw PII text.
+Named in tribute to the Jovian cosmic shields that intercept and absorb rogue impacts to protect the space within.
+
+## Core Architecture
+- **Zero-Trust Tokenization Suite:** Intercepts outbound prompts or file streams and masks high-risk strings utilizing modular scanners.
+- **Stateful Inbound Reversal Vault:** Registers temporary tokens to volatile system memory, allowing downstream AI responses to map context cleanly and natively back to internal work environments.
+- **Automated Memory Expiry Execution (TTL Cache):** Tokens actively self-destruct from system RAM based on configurable expiration windows to guarantee strict security compliance.
+- **Structured JSONL Logger:** Records metadata compliance metrics line-by-line via streaming JSON Lines (`.jsonl`) without logging underlying sensitive text—frontend-ready and optimized for SIEM systems like Splunk or Datadog.
+- **Perimeter Authentication:** Enforces secure integration boundaries by validating client queries against external `config.yaml` token settings.
+- **Decoupled Feature Flags:** Allows administrators to dynamically toggle individual detector pipelines on or off at runtime via a centralized settings file without touching core application logic.
 
 ## Project Structure
 ```text
-├── core/            # Gateway orchestration, session tracking, and CSV loggers
-├── detectors/       # Modular, single-responsibility regex & NLP detection classes
+├── core/            # Gateway orchestration, validation filters, and JSONL loggers
+├── detectors/       # Modular, single-responsibility regex & NLP scanners
 ├── main.py          # Asynchronous FastAPI route gateway handlers
 └── test_direct.py   # Isolated mock evaluation pipeline tool
 ```
 
-## Getting Started
+## Configuration Matrix (`config.yaml`)
+You can fully decouple settings from logic using the centralized profile file:
+```yaml
+gateway:
+  token_ttl_seconds: 600
 
-### Local Setup (No-Network Direct Engine Test)
+logging:
+  log_file_path: "audit_log.jsonl"
+
+security:
+  master_api_key: "sec_gateway_secret_abc123"
+
+detectors:
+  email_scanner_enabled: true
+  credit_card_scanner_enabled: true
+  infrastructure_scanner_enabled: true
+```
+
+## Getting Started
 1. Clone the repository and install requirements:
    ```bash
-   pip install fastapi uvicorn pydantic requests
+   pip install fastapi uvicorn pydantic requests PyYAML
    ```
-2. Execute the self-contained verification suite:
+2. Execute the full-spectrum verification suite:
    ```bash
    python test_direct.py
    ```
 
 ## License
-Licensed under the GNU Affero General Public License v3 (**AGPLv3**). See LICENSE for details. Developed for high-leverage data security applications.
+Licensed under the GNU Affero General Public License v3 (**AGPLv3**). See LICENSE for details. Developed for enterprise data security applications.
