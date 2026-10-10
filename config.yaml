@@ -6,12 +6,13 @@ gateway:
   token_ttl_seconds: 600
 
 logging:
-  log_file_path: "audit_log.jsonl"
+  log_directory: "logs" 
+  log_filename_pattern: "jovian-shield-{date}-{name}.jsonl"
+  log_base_name: "prod"
 
 security:
   master_api_key: "sec_gateway_secret_abc123"
 
-# 🌟 ADDED: Modular Feature Flags to toggle scanning profiles
 detectors:
   email_scanner_enabled: true
   credit_card_scanner_enabled: true

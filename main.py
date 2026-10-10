@@ -33,21 +33,20 @@ async def proxy_chat_endpoint(
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def visual_analytics_dashboard():
-    """Parses streaming .jsonl compliance logs into an enterprise analytics matrix view."""
+    """Parses streaming log matrices into an enterprise analytics matrix view."""
     log_records = []
-    log_path = config_manager.log_path
     
-    # Read streaming entries line-by-line from your hard drive safely
+    from core import engine
+    log_path = engine.logger.get_active_rotated_filepath()
+        
     if os.path.exists(log_path):
         with open(log_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     log_records.append(json.loads(line.strip()))
                     
-    # Reverse records to display the newest events first
     log_records.reverse()
     
-    # Generate interactive, minimal table rows dynamically
     table_rows = ""
     for log in log_records:
         table_rows += f"""
@@ -60,19 +59,18 @@ async def visual_analytics_dashboard():
         </tr>
         """
 
-    # Return pure HTML layout
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Secure AI Gateway Dashboard</title>
+        <title>Jovian Perimeter Control Center</title>
         <meta http-equiv="refresh" content="5"> <!-- Auto-refreshes security feed every 5 seconds -->
     </head>
     <body style="font-family: system-ui, sans-serif; background: #f7fafc; margin: 0; padding: 40px; color: #2d3748;">
         <div style="max-width: 1200px; margin: 0 auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
                 <div>
-                    <h1 style="margin: 0; font-size: 2.2em; color: #1a202c;">🛡️ AI Governance Gateway</h1>
+                    <h1 style="margin: 0; font-size: 2.2em; color: #1a202c;">🛡️ Jovian Perimeter Control Center</h1>
                     <p style="margin: 5px 0 0 0; color: #718096;">Real-Time Enterprise Compliance Stream Audit Ledger</p>
                 </div>
                 <div style="background: #3182ce; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">

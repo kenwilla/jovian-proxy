@@ -27,7 +27,9 @@ gateway:
   token_ttl_seconds: 600
 
 logging:
-  log_file_path: "audit_log.jsonl"
+  log_directory: "logs"
+  log_filename_pattern: "{name}_{date}.jsonl"
+  log_base_name: "audit_log"
 
 security:
   master_api_key: "sec_gateway_secret_abc123"
@@ -37,6 +39,14 @@ detectors:
   credit_card_scanner_enabled: true
   infrastructure_scanner_enabled: true
 ```
+
+### Logging Variable Templates
+The `log_filename_pattern` parameter supports dynamic pattern mapping tokens inside `config.yaml` to ensure clean integration with downstream corporate data pipelines:
+
+| Placeholder | Replaced Value | Example Output Transformation |
+| :--- | :--- | :--- |
+| `{name}` | Substitutes the exact string defined inside the `log_base_name` field. | `audit_log` |
+| `{date}` | Appends the current calendar stamp automatically using the `YYYY-MM-DD` format. | `2026-10-10` |
 
 ## Getting Started
 1. Clone the repository and install requirements:

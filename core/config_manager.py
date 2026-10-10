@@ -2,16 +2,18 @@ import yaml
 import os
 
 class GatewayConfigManager:
-    """Handles parsing, validation, and safe extraction of external configuration profiles."""
     def __init__(self, config_path: str = "config.yaml"):
         self.config_path = config_path
         self.settings = self._load_yaml_profile()
 
     def _load_yaml_profile(self) -> dict:
-        """Reads the local configuration file or returns hardcoded safe defaults if missing."""
         default_settings = {
             "gateway": {"token_ttl_seconds": 600},
-            "logging": {"log_file_path": "audit_log.jsonl"}
+            "logging": {
+                "log_directory": "logs",
+                "log_filename_pattern": "{name}_{date}.jsonl",
+                "log_base_name": "audit_log"
+            }
         }
         
         if not os.path.exists(self.config_path):
@@ -25,17 +27,25 @@ class GatewayConfigManager:
             return default_settings
 
     @property
+    def log_dir(self) -> str:
+        return self.settings.get("logging", {}).get("log_directory", "logs")
+
+    @property
+    def log_pattern(self) -> str:
+        return self.settings.get("logging", {}).get("log_filename_pattern", "{name}_{date}.jsonl")
+
+    @property
+    def log_base_name(self) -> str:
+        return self.settings.get("logging", {}).get("log_base_name", "audit_log")
+
+    @property
     def token_ttl(self) -> int:
         return self.settings.get("gateway", {}).get("token_ttl_seconds", 600)
 
     @property
-    def log_path(self) -> str:
-        return self.settings.get("logging", {}).get("log_file_path", "audit_log.jsonl")
-        
-    @property
     def master_key(self) -> str:
         return self.settings.get("security", {}).get("master_api_key", "")
-        
+
     @property
     def email_enabled(self) -> bool:
         return self.settings.get("detectors", {}).get("email_scanner_enabled", True)
