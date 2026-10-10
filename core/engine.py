@@ -42,7 +42,6 @@ class GovernanceEngine:
                 "expires_at": expiry_timestamp
             }
             
-            # 🌟 UPDATED: Passing attribution strings straight to our logger
             self.logger.write_record(user_id, department, token_placeholder, finding['type'])
             
             anonymized_text = (

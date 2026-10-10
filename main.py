@@ -1,20 +1,26 @@
-from fastapi import FastAPI
+import json
+import os
+from typing import Optional
+from fastapi import FastAPI, Header, Depends
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+
 from core import engine
+from core.auth import verify_gateway_authentication 
+from core.config_manager import config_manager  # Clean global lookup
 
 app = FastAPI(title="Secure AI Gateway Proxy")
 
-class ChatPayload(BaseModel):
+class ChatPayload(BaseModel): 
     prompt: str
 
 @app.post("/v1/proxy/chat")
 async def proxy_chat_endpoint(
     payload: ChatPayload,
-    # 🌟 FastAPI reads these custom corporate network headers out of the request dynamically
     x_user_id: Optional[str] = Header(default="UNKNOWN"),
-    x_department: Optional[str] = Header(default="UNKNOWN")
+    x_department: Optional[str] = Header(default="UNKNOWN"),
+    _: bool = Depends(verify_gateway_authentication)
 ):
-    # Pass them directly down into the governance core execution track
     clean_text = engine.clean_outbound_prompt(
         text=payload.prompt, 
         user_id=x_user_id, 
@@ -24,3 +30,73 @@ async def proxy_chat_endpoint(
         "status": "SECURED",
         "sanitized_prompt": clean_text
     }
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def visual_analytics_dashboard():
+    """Parses streaming .jsonl compliance logs into an enterprise analytics matrix view."""
+    log_records = []
+    log_path = config_manager.log_path
+    
+    # Read streaming entries line-by-line from your hard drive safely
+    if os.path.exists(log_path):
+        with open(log_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    log_records.append(json.loads(line.strip()))
+                    
+    # Reverse records to display the newest events first
+    log_records.reverse()
+    
+    # Generate interactive, minimal table rows dynamically
+    table_rows = ""
+    for log in log_records:
+        table_rows += f"""
+        <tr>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-family: monospace;">{log['timestamp_utc']}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #4a5568;">{log['attribution']['user_id']}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #718096;">{log['attribution']['department']}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-family: monospace; background: #edf2f7; border-radius: 4px;">{log['security_event']['token_placeholder']}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="background: #fed7d7; color: #9b2c2c; padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold;">{log['security_event']['detected_entity_type']}</span></td>
+        </tr>
+        """
+
+    # Return pure HTML layout
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Secure AI Gateway Dashboard</title>
+        <meta http-equiv="refresh" content="5"> <!-- Auto-refreshes security feed every 5 seconds -->
+    </head>
+    <body style="font-family: system-ui, sans-serif; background: #f7fafc; margin: 0; padding: 40px; color: #2d3748;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <div>
+                    <h1 style="margin: 0; font-size: 2.2em; color: #1a202c;">🛡️ AI Governance Gateway</h1>
+                    <p style="margin: 5px 0 0 0; color: #718096;">Real-Time Enterprise Compliance Stream Audit Ledger</p>
+                </div>
+                <div style="background: #3182ce; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">
+                    🔒 PERIMETER KEY: ENFORCED
+                </div>
+            </div>
+            
+            <div style="background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: #ebf8ff; color: #2b6cb0; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em;">
+                            <th style="padding: 16px;">Timestamp (UTC)</th>
+                            <th style="padding: 16px;">User ID</th>
+                            <th style="padding: 16px;">Department</th>
+                            <th style="padding: 16px;">Traceable Token</th>
+                            <th style="padding: 16px;">Violation Blocked</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {table_rows if table_rows else '<tr><td colspan="5" style="padding: 40px; text-align: center; color: #a0aec0;">No compliance violations logged yet. Gateway secure.</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+    </html>
+    """

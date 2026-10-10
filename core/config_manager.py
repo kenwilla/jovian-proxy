@@ -20,7 +20,6 @@ class GatewayConfigManager:
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 loaded_yaml = yaml.safe_load(f)
-                # Graceful backup step if the YAML file is empty
                 return loaded_yaml if loaded_yaml else default_settings
         except Exception:
             return default_settings
@@ -32,6 +31,9 @@ class GatewayConfigManager:
     @property
     def log_path(self) -> str:
         return self.settings.get("logging", {}).get("log_file_path", "audit_log.jsonl")
+        
+    @property
+    def master_key(self) -> str:
+        return self.settings.get("security", {}).get("master_api_key", "")
 
-# Instantiated globally for single-responsibility state lookup across modules
 config_manager = GatewayConfigManager()

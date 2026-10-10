@@ -5,7 +5,6 @@ from core.config_manager import config_manager # <--- Added configuration link
 class JSONComplianceLogger:
     """Handles permanent, structured JSON log persistence powered by external settings."""
     def __init__(self):
-        # 🌟 UPDATED: Dynamic lookup via config manager property
         self.log_file_path = config_manager.log_path
 
     def write_record(self, user_id: str, department: str, token_placeholder: str, entity_type: str):
