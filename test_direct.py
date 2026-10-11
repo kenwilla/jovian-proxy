@@ -36,6 +36,10 @@ urllib.request.urlopen = mock_urlopen_handler
 # =====================================================================
 class MockSystemDetector(BaseDetector):
     """Simulates multi-responsibility regex detection logic patterns."""
+    def __init__(self):
+        # 💎 FIX: Explicitly supply structural parameters to satisfy the BaseDetector contract
+        super().__init__(name="MockSystemDetector", entity_type="MOCK_VIOLATION")
+        
     def detect(self, text: str) -> list:
         findings = []
         if "admin@jovianhq.com" in text:
