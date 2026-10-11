@@ -22,3 +22,9 @@ network:
 webhooks:
   webhook_streaming_enabled: true
   target_destination_url: "http://127.0.0.1"
+
+chat_notifications:
+  enabled: true
+  provider: "slack" 
+  webhook_url: "https://slack.com"
+  min_severity_level: "HIGH"

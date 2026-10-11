@@ -13,6 +13,12 @@ class GatewayConfigManager:
                 "log_directory": "logs",
                 "log_filename_pattern": "{name}_{date}.jsonl",
                 "log_base_name": "audit_log"
+            },
+            "chat_notifications": {
+                "enabled": False,
+                "provider": "slack",
+                "webhook_url": "",
+                "min_severity_level": "HIGH"
             }
         }
         
@@ -73,5 +79,15 @@ class GatewayConfigManager:
     @property
     def webhook_url(self) -> str:
         return self.settings.get("webhooks", {}).get("target_destination_url", "")
+
+    @property
+    def chat_notifications(self) -> dict:
+        """Returns the structural dictionary mapping for corporate Slack/Teams alerting pipelines."""
+        return self.settings.get("chat_notifications", {
+            "enabled": False,
+            "provider": "slack",
+            "webhook_url": "",
+            "min_severity_level": "HIGH"
+        })
 
 config_manager = GatewayConfigManager()

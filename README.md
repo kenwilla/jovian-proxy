@@ -11,10 +11,11 @@ Named in tribute to the Jovian cosmic shields that intercept and absorb rogue im
 - **Structured JSONL Logger:** Records metadata compliance metrics line-by-line via streaming JSON Lines (`.jsonl`) without logging underlying sensitive text—frontend-ready and optimized for SIEM systems like Splunk or Datadog.
 - **Perimeter Authentication:** Enforces secure integration boundaries by validating client queries against external `config.yaml` token settings.
 - **Decoupled Feature Flags:** Allows administrators to dynamically toggle individual detector pipelines on or off at runtime via a centralized settings file without touching core application logic.
+- **Incident Escalation Engine:** Streams rich, asynchronous layout cards straight into collaborative workspace channels when critical leaks occur.
 
 ## Project Structure
 ```text
-├── core/            # Gateway orchestration, validation filters, and JSONL loggers
+├── core/            # Gateway orchestration, validation filters, loggers, and streamers
 ├── detectors/       # Modular, single-responsibility regex & NLP scanners
 ├── main.py          # Asynchronous FastAPI route gateway handlers
 └── test_direct.py   # Isolated mock evaluation pipeline tool
@@ -38,6 +39,12 @@ detectors:
   email_scanner_enabled: true
   credit_card_scanner_enabled: true
   infrastructure_scanner_enabled: true
+
+chat_notifications:
+  enabled: true
+  provider: "slack" # Options: "slack" or "teams"
+  webhook_url: "https://slack.com..."
+  min_severity_level: "HIGH" # Filter options: "ALL" or "HIGH" (infrastructure only)
 ```
 
 ### Logging Variable Templates
@@ -46,7 +53,13 @@ The `log_filename_pattern` parameter supports dynamic pattern mapping tokens ins
 | Placeholder | Replaced Value | Example Output Transformation |
 | :--- | :--- | :--- |
 | `{name}` | Substitutes the exact string defined inside the `log_base_name` field. | `audit_log` |
-| `{date}` | Appends the current calendar stamp automatically using the `YYYY-MM-DD` format. | `2026-10-10` |
+| `{date}` | Appends the current calendar stamp automatically using the `YYYY-MM-DD` format. | `2026-10-11` |
+
+### Chat Notification Providers
+The alerting engine maps internal events directly into complex interface templates unique to each provider profile:
+
+* **`slack`**: Fires a rich **Slack Block Kit** layout containing formatted section blocks, metadata tracking columns, and colored system indicators.
+* **`teams`**: Formats an **Office 365 Connector MessageCard** schema featuring Markdown-rendered factual lists and targeted warning outlines.
 
 ## Getting Started
 1. Clone the repository and install requirements:

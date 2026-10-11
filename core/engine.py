@@ -2,6 +2,7 @@ import time
 from typing import List, Dict
 from detectors.base import BaseDetector
 from core.logger import JSONComplianceLogger
+from core.streamer import webhook_streamer
 
 class GovernanceEngine:
     def __init__(self, detectors: List[BaseDetector], ttl_seconds: int = 600):
@@ -32,6 +33,7 @@ class GovernanceEngine:
         
         current_time = time.time()
         expiry_timestamp = current_time + self.ttl_seconds
+        timestamp_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(current_time))
         
         for idx, finding in enumerate(all_findings):
             token_placeholder = f"USER_TOKEN_{finding['type']}_{idx+1}"
@@ -43,6 +45,14 @@ class GovernanceEngine:
             }
             
             self.logger.write_record(user_id, department, token_placeholder, finding['type'])
+            
+            webhook_streamer.stream_event_payload(
+                user_id=user_id,
+                department=department,
+                token_placeholder=token_placeholder,
+                entity_type=finding['type'],
+                timestamp_iso=timestamp_iso
+            )
             
             anonymized_text = (
                 anonymized_text[:finding["start"]] + 

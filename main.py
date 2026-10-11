@@ -5,9 +5,9 @@ from fastapi import FastAPI, Header, Depends, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
-from core import engine
+from core.engine import engine
 from core.auth import verify_gateway_authentication 
-from core.config_manager import config_manager  # Clean global lookup
+from core.config_manager import config_manager
 
 app = FastAPI(title="Secure AI Gateway Proxy")
 
@@ -22,6 +22,7 @@ async def proxy_chat_endpoint(
     x_department: Optional[str] = Header(default="UNKNOWN"),
     _: bool = Depends(verify_gateway_authentication)
 ):
+    """Intercepts outbound user traffic via HTTP headers and cleans sensitive data pools."""
     clean_text = engine.clean_outbound_prompt(
         text=payload.prompt, 
         user_id=x_user_id, 
@@ -33,18 +34,21 @@ async def proxy_chat_endpoint(
     }
 
 @app.get("/dashboard", response_class=HTMLResponse)
-async def visual_analytics_dashboard():
+async def visual_analytics_dashboard(
+    _: bool = Depends(verify_gateway_authentication)
+):
     """Parses streaming log matrices into an enterprise analytics matrix view."""
     log_records = []
-    
-    from core import engine
     log_path = engine.logger.get_active_rotated_filepath()
         
     if os.path.exists(log_path):
         with open(log_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip():
-                    log_records.append(json.loads(line.strip()))
+                    try:
+                        log_records.append(json.loads(line.strip()))
+                    except Exception:
+                        continue
                     
     log_records.reverse()
     
@@ -52,11 +56,11 @@ async def visual_analytics_dashboard():
     for log in log_records:
         table_rows += f"""
         <tr>
-            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-family: monospace;">{log['timestamp_utc']}</td>
-            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #4a5568;">{log['attribution']['user_id']}</td>
-            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #718096;">{log['attribution']['department']}</td>
-            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-family: monospace; background: #edf2f7; border-radius: 4px;">{log['security_event']['token_placeholder']}</td>
-            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="background: #fed7d7; color: #9b2c2c; padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold;">{log['security_event']['detected_entity_type']}</span></td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-family: monospace;">{log.get('timestamp_utc', 'N/A')}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #4a5568;">{log.get('attribution', {}).get('user_id', 'UNKNOWN')}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #718096;">{log.get('attribution', {}).get('department', 'UNKNOWN')}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-family: monospace; background: #edf2f7; border-radius: 4px;">{log.get('security_event', {}).get('token_placeholder', 'N/A')}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="background: #fed7d7; color: #9b2c2c; padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold;">{log.get('security_event', {}).get('detected_entity_type', 'UNKNOWN')}</span></td>
         </tr>
         """
 
@@ -100,7 +104,7 @@ async def visual_analytics_dashboard():
     </html>
     """
 
-@app.post("/v1/internal/collector")
+@app.post("/v1/internal/collector", dependencies=[Depends(verify_gateway_authentication)])
 async def mock_central_telemetry_collector(payload: dict):
     """Acts as a mock destination endpoint matching your future cloud platform dashboard."""
     print(f"\n📡 [CLOUD WEBHOOK INGESTED]: Event transmitted successfully!")
