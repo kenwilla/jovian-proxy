@@ -13,7 +13,7 @@ from fastapi import FastAPI, Header, Depends, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
-from core.engine import engine
+from core import engine
 from core.auth import verify_gateway_authentication 
 from core.config_manager import config_manager
 
@@ -117,6 +117,7 @@ async def visual_analytics_dashboard(
     """
 
 @app.post("/v1/internal/collector", dependencies=[Depends(verify_gateway_authentication)])
+@app.post("/v1/internal/collector/", dependencies=[Depends(verify_gateway_authentication)])
 async def mock_central_telemetry_collector(payload: dict):
     """
     Acts as a mock destination endpoint matching your future cloud platform dashboard.
