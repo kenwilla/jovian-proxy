@@ -65,17 +65,15 @@ class MockSystemDetector(BaseDetector):
 # =====================================================================
 print("🛡️  Jovian Proxy Full-Spectrum Feature Flag Validation Test...")
 
-# Force enable features in memory to guarantee test path validity
-config_manager.settings["webhooks"] = {
-    "webhook_streaming_enabled": True, 
-    "target_destination_url": "http://jovian.internal"
-}
-config_manager.settings["chat_notifications"] = {
+# 💎 FIX: Programmatically patch the properties to bypass missing config.yaml on CI
+config_manager.__class__.webhook_enabled = property(lambda self: True)
+config_manager.__class__.webhook_url = property(lambda self: "http://jovian.internal")
+config_manager.__class__.chat_notifications = property(lambda self: {
     "enabled": True,
     "provider": "slack",
     "webhook_url": "https://slack.com",
     "min_severity_level": "HIGH"
-}
+})
 
 # Instantiate Engine with Mock Scanners
 engine = GovernanceEngine(detectors=[MockSystemDetector()], ttl_seconds=600)
