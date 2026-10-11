@@ -56,7 +56,10 @@ class MockSystemDetector(BaseDetector):
 print("🛡️  Jovian Proxy Full-Spectrum Feature Flag Validation Test...")
 
 # Force enable features in memory to guarantee test path validity
-config_manager.settings["webhooks"] = {"webhook_streaming_enabled": True, "target_destination_url": "http://127.0.0"}
+config_manager.settings["webhooks"] = {
+    "webhook_streaming_enabled": True, 
+    "target_destination_url": "http://jovian.internal"
+}
 config_manager.settings["chat_notifications"] = {
     "enabled": True,
     "provider": "slack",
