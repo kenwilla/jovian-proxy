@@ -1,3 +1,11 @@
+"""
+Jovian Proxy Core Application Route Matrix.
+
+Configures high-throughput, perimeter-defended FastAPI endpoints to intercept, 
+anonymize, and stream metrics from outbound engineering prompts while exposing 
+a secure visual monitoring analytics deck.
+"""
+
 import json
 import os
 from typing import Optional
@@ -22,7 +30,9 @@ async def proxy_chat_endpoint(
     x_department: Optional[str] = Header(default="UNKNOWN"),
     _: bool = Depends(verify_gateway_authentication)
 ):
-    """Intercepts outbound user traffic via HTTP headers and cleans sensitive data pools."""
+    """
+    Intercepts outbound user traffic via HTTP headers and cleans sensitive data pools.
+    """
     clean_text = engine.clean_outbound_prompt(
         text=payload.prompt, 
         user_id=x_user_id, 
@@ -37,7 +47,9 @@ async def proxy_chat_endpoint(
 async def visual_analytics_dashboard(
     _: bool = Depends(verify_gateway_authentication)
 ):
-    """Parses streaming log matrices into an enterprise analytics matrix view."""
+    """
+    Parses streaming log matrices from local storage to render an enterprise compliance grid view.
+    """
     log_records = []
     log_path = engine.logger.get_active_rotated_filepath()
         
@@ -106,7 +118,9 @@ async def visual_analytics_dashboard(
 
 @app.post("/v1/internal/collector", dependencies=[Depends(verify_gateway_authentication)])
 async def mock_central_telemetry_collector(payload: dict):
-    """Acts as a mock destination endpoint matching your future cloud platform dashboard."""
+    """
+    Acts as a mock destination endpoint matching your future cloud platform dashboard.
+    """
     print(f"\n📡 [CLOUD WEBHOOK INGESTED]: Event transmitted successfully!")
     print(json.dumps(payload, indent=2))
     return {"status": "RECEIVED"}
