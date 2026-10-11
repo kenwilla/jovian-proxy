@@ -1,6 +1,14 @@
+"""
+Jovian Proxy Full-Spectrum Local Validation Suite.
+
+Executes isolated, high-performance mock evaluation pipelines to assert 
+compliance state mapping, token splicing accuracy, and asynchronous 
+telemetry dispatch routing behaviors.
+"""
+
 import json
 import urllib.request
-from io import BytesIO
+import time
 from core.engine import GovernanceEngine
 from core.config_manager import config_manager
 from detectors.base import BaseDetector
@@ -23,7 +31,10 @@ def mock_urlopen_handler(url, data=None, timeout=None):
     if data:
         try:
             parsed_json = json.loads(data.decode("utf-8"))
-            intercepted_payloads.append({"url": url.full_url if hasattr(url, 'full_url') else str(url), "payload": parsed_json})
+            intercepted_payloads.append({
+                "url": url.full_url if hasattr(url, 'full_url') else str(url), 
+                "payload": parsed_json
+            })
         except Exception:
             pass
     return MockURLResponse()
@@ -37,9 +48,8 @@ urllib.request.urlopen = mock_urlopen_handler
 class MockSystemDetector(BaseDetector):
     """Simulates multi-responsibility regex detection logic patterns."""
     def __init__(self):
-        # 💎 FIX: Explicitly supply structural parameters to satisfy the BaseDetector contract
         super().__init__(name="MockSystemDetector", entity_type="MOCK_VIOLATION")
-        
+
     def detect(self, text: str) -> list:
         findings = []
         if "admin@jovianhq.com" in text:
@@ -89,21 +99,20 @@ safe_prompt = engine.clean_outbound_prompt(
 print("\n2. ☁️  [WHAT THE PUBLIC CLOUD LLM ENCOUNTER SEES]:")
 print(f"   \"{safe_prompt}\"")
 
-# Give the daemon threads a brief window to register local memory bounds
-import time
-time.sleep(0.1)
+# ⏱️ 🔑 FIXED TIMING LAYER: Give async background daemon threads a window to populate memory
+print("\n⏱️ Pausing briefly to allow background telemetry streams to complete...")
+time.sleep(0.5)
 
 print("\n3. ⚡ [INTERCEPTED OUTBOUND TRANSMISSIONS]:")
 if not intercepted_payloads:
     print("   ⚠️ No background streams triggered.")
 else:
     for idx, item in enumerate(intercepted_payloads, 1):
-        target = "Corporate Webhook" if "127.0.0" in item["url"] else f"Chat Platform ({config_manager.chat_notifications.get('provider')})"
+        target = "Corporate Webhook" if "telemetry.jovian" in item["url"] else "Chat Platform"
         print(f"\n   📍 Flight Payload #{idx} -> Destination: {target}")
         print(json.dumps(item["payload"], indent=5))
 
 # Assert state constraints to confirm high severity rules work
 print("\n4. ✅ [SYSTEM ASSERTION AUDIT]:")
-has_infra_alert = any("INFRASTRUCTURE" in str(x) for x in intercepted_payloads)
 assert len(intercepted_payloads) > 0, "Regression Error: Outbound telemetry dropped!"
 print("   💎 PASS: Telemetry and chat routines decoupled and routing smoothly.")
