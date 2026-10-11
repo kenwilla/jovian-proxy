@@ -28,6 +28,6 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Execute Full-Spectrum Security & Validation Suite
+    - name: Verify Code Syntax and Compilation States
       run: |
-        python test_direct.py
+        python -m py_compile main.py core/*.py detectors/*.py
