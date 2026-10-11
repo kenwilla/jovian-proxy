@@ -9,20 +9,21 @@ Named in tribute to the Jovian cosmic shields that intercept and absorb rogue im
 - **Stateful Inbound Reversal Vault:** Registers temporary tokens to volatile system memory, allowing downstream AI responses to map context cleanly and natively back to internal work environments.
 - **Automated Memory Expiry Execution (TTL Cache):** Tokens actively self-destruct from system RAM based on configurable expiration windows to guarantee strict security compliance.
 - **Structured JSONL Logger:** Records metadata compliance metrics line-by-line via streaming JSON Lines (`.jsonl`) without logging underlying sensitive text—frontend-ready and optimized for SIEM systems like Splunk or Datadog.
-- **Perimeter Authentication:** Enforces secure integration boundaries by validating client queries against external `config.yaml` token settings.
+- **Perimeter Authentication:** Enforces secure integration boundaries by validating client queries against external `config.yaml` network settings and API headers.
 - **Decoupled Feature Flags:** Allows administrators to dynamically toggle individual detector pipelines on or off at runtime via a centralized settings file without touching core application logic.
-- **Incident Escalation Engine:** Streams rich, asynchronous layout cards straight into collaborative workspace channels when critical leaks occur.
+- **Incident Escalation Engine:** Streams rich, asynchronous layout cards straight into collaborative workspace channels (Slack or Teams) when high-risk leaks occur.
 
 ## Project Structure
 ```text
 ├── core/            # Gateway orchestration, validation filters, loggers, and streamers
 ├── detectors/       # Modular, single-responsibility regex & NLP scanners
 ├── main.py          # Asynchronous FastAPI route gateway handlers
-└── test_direct.py   # Isolated mock evaluation pipeline tool
+├── test_direct.py   # Isolated local mock evaluation pipeline tool
+└── test_network.py  # Live egress integration test runner over sockets
 ```
 
 ## Configuration Matrix (`config.yaml`)
-You can fully decouple settings from logic using the centralized profile file:
+You can fully decouple settings from logic using the centralized configuration profile:
 ```yaml
 gateway:
   token_ttl_seconds: 600
@@ -39,6 +40,17 @@ detectors:
   email_scanner_enabled: true
   credit_card_scanner_enabled: true
   infrastructure_scanner_enabled: true
+
+network:
+  ip_whitelist_enabled: true
+  allowed_ip_networks:
+    - "127.0.0.1/32"
+    - "::1/128"
+    - "192.168.1.0/24"
+
+webhooks:
+  webhook_streaming_enabled: true
+  target_destination_url: "http://{SERVER_HOST}/v1/internal/collector"
 
 chat_notifications:
   enabled: true
@@ -62,13 +74,19 @@ The alerting engine maps internal events directly into complex interface templat
 * **`teams`**: Formats an **Office 365 Connector MessageCard** schema featuring Markdown-rendered factual lists and targeted warning outlines.
 
 ## Getting Started
-1. Clone the repository and install requirements:
+1. Clone the repository, copy `config.yaml.example` to `config.yaml`, and install requirements:
    ```bash
    pip install fastapi uvicorn pydantic requests PyYAML
    ```
-2. Execute the full-spectrum verification suite:
+2. Execute the isolated mock validation simulator script:
    ```bash
    python test_direct.py
+   ```
+3. Execute the full-spectrum live egress integration test network suite:
+   ```bash
+   # In terminal 1 boot the server: uvicorn main:app --reload
+   # In terminal 2 execute the test harness:
+   python test_network.py
    ```
 
 ## License
