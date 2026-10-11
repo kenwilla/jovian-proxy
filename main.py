@@ -9,7 +9,7 @@ a secure visual monitoring analytics deck.
 import json
 import os
 from typing import Optional
-from fastapi import FastAPI, Header, Depends, Request
+from fastapi import FastAPI, Header, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -21,6 +21,9 @@ app = FastAPI(title="Secure AI Gateway Proxy")
 
 class ChatPayload(BaseModel): 
     prompt: str
+
+class RestorePayload(BaseModel):
+    text: str
 
 @app.post("/v1/proxy/chat")
 async def proxy_chat_endpoint(
@@ -42,6 +45,24 @@ async def proxy_chat_endpoint(
         "status": "SECURED",
         "sanitized_prompt": clean_text
     }
+
+@app.post("/v1/proxy/restore")
+async def proxy_restore_endpoint(
+    payload: RestorePayload,
+    request: Request,
+    _: bool = Depends(verify_gateway_authentication)
+):
+    """
+    Intercepts inbound AI responses and restores masked tokens back to their original values.
+    """
+    try:
+        restored_text = engine.restore_inbound_response(ai_response_text=payload.text)
+        return {
+            "status": "RESTORED",
+            "restored_text": restored_text
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal State Reversal Fault: {str(e)}")
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def visual_analytics_dashboard(
@@ -87,7 +108,7 @@ async def visual_analytics_dashboard(
         <div style="max-width: 1200px; margin: 0 auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
                 <div>
-                    <h1 style="margin: 0; font-size: 2.2em; color: #1a202c;">🛡️ Jovian Perimeter Control Center</h1>
+                    <h1 style="margin: 0; font-size: 2.2em; color: #1a202c;">🛡️ Jovian Proxy Perimeter Control Center</h1>
                     <p style="margin: 5px 0 0 0; color: #718096;">Real-Time Enterprise Compliance Stream Audit Ledger</p>
                 </div>
                 <div style="background: #3182ce; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.9em;">
@@ -117,7 +138,6 @@ async def visual_analytics_dashboard(
     """
 
 @app.post("/v1/internal/collector", dependencies=[Depends(verify_gateway_authentication)])
-@app.post("/v1/internal/collector/", dependencies=[Depends(verify_gateway_authentication)])
 async def mock_central_telemetry_collector(payload: dict):
     """
     Acts as a mock destination endpoint matching your future cloud platform dashboard.
