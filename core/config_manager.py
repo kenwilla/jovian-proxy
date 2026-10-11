@@ -65,5 +65,13 @@ class GatewayConfigManager:
     @property
     def allowed_networks(self) -> list:
         return self.settings.get("network", {}).get("allowed_ip_networks", [])
+        
+    @property
+    def webhook_enabled(self) -> bool:
+        return self.settings.get("webhooks", {}).get("webhook_streaming_enabled", False)
+
+    @property
+    def webhook_url(self) -> str:
+        return self.settings.get("webhooks", {}).get("target_destination_url", "")
 
 config_manager = GatewayConfigManager()

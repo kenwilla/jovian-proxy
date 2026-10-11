@@ -16,7 +16,7 @@ headers = {
 }
 
 payload = {
-    "prompt": "Testing live enterprise network transmission bounds."
+    "prompt": "CRITICAL: Engineer admin@jovianhq.com is debugging an infrastructure leak with AWS key AKIAIOSFODNN7EXAMPLE right now."
 }
 
 print("🌐 Dispatching live network packet to Jovian Proxy Server...")

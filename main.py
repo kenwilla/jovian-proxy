@@ -99,3 +99,10 @@ async def visual_analytics_dashboard():
     </body>
     </html>
     """
+
+@app.post("/v1/internal/collector")
+async def mock_central_telemetry_collector(payload: dict):
+    """Acts as a mock destination endpoint matching your future cloud platform dashboard."""
+    print(f"\n📡 [CLOUD WEBHOOK INGESTED]: Event transmitted successfully!")
+    print(json.dumps(payload, indent=2))
+    return {"status": "RECEIVED"}

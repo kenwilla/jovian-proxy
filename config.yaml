@@ -18,3 +18,7 @@ network:
   ip_whitelist_enabled: true
   allowed_ip_networks:
     - "127.0.0.1/32"
+    
+webhooks:
+  webhook_streaming_enabled: true
+  target_destination_url: "http://127.0.0.1"

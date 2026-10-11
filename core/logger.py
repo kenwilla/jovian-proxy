@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime, timezone
 from core.config_manager import config_manager
+from core.streamer import webhook_streamer
 
 class JSONComplianceLogger:
     def __init__(self):
@@ -40,3 +41,11 @@ class JSONComplianceLogger:
         
         with open(active_file_path, mode='a', encoding='utf-8') as f:
             f.write(json.dumps(log_record) + "\n")
+        
+        webhook_streamer.stream_event_payload(
+            user_id=user_id,
+            department=department,
+            token_placeholder=token_placeholder,
+            entity_type=entity_type,
+            timestamp_iso=timestamp_iso
+        )
