@@ -1,15 +1,41 @@
-# Local database / compliance logs (CRITICAL)
-audit_log.csv
+# =====================================================================
+# 🛡️ CORPORATE DATA COMPLIANCE PROTECTION
+# =====================================================================
+# Completely block raw compliance ledgers, tokens, and telemetry matrices
+logs/
+*.jsonl
+*.csv
+*.log
 
-# Python runtime artifacts
+# =====================================================================
+# 🔑 SECURITY CREDENTIAL PROTECTION
+# =====================================================================
+# Never allow local production keys or real chat integration endpoints into code
+config.yaml
+.env
+.env.*
+
+# =====================================================================
+# 🐍 PYTHON RUNTIME BINARIES & ENGINE ARTIFACTS
+# =====================================================================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
 
-# Local environments & IDE configs
+# =====================================================================
+# 💻 LOCAL WORKSPACE ENVIRONMENT CONFIGS
+# =====================================================================
 .venv/
 venv/
-.env
+ENV/
 .vscode/
 .idea/
+*.swp
+.DS_Store
